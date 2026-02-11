@@ -1,1 +1,147 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PIZZA TITY - Pedidos</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="bg-gray-100 pb-32">
 
+    <header class="bg-white p-4 text-center shadow-sm">
+        <div class="flex justify-center mb-2">
+            <div class="bg-red-600 text-white font-black px-4 py-2 rounded-lg shadow-lg border-2 border-black">
+                <span class="text-xl">PIZZA TITY</span>
+            </div>
+        </div>
+        <div class="text-sm text-gray-600 font-medium">
+            <p class="text-xs text-gray-400 mb-1">Plazoleta de las Pizzas - Caucasia</p>
+            <p><i class="fab fa-whatsapp text-green-500"></i> Domicilios: 3226438714</p>
+            <p><i class="fas fa-wallet text-blue-500"></i> Nequi: 3226438714</p>
+        </div>
+    </header>
+
+    <section class="p-4 max-w-md mx-auto">
+        <div class="bg-white p-4 rounded-xl shadow-md mb-6">
+            <h2 class="font-bold text-gray-700 mb-3 border-b pb-2 text-xs uppercase tracking-wider">Datos del Cliente</h2>
+            <div id="customer-form" class="space-y-3">
+                <input type="text" id="c-name" placeholder="Nombre completo" class="w-full p-2 border rounded-lg text-sm">
+                <input type="text" id="c-address" placeholder="Dirección de entrega" class="w-full p-2 border rounded-lg text-sm">
+                <input type="tel" id="c-phone" placeholder="Celular" class="w-full p-2 border rounded-lg text-sm">
+                <select id="c-payment" class="w-full p-2 border rounded-lg text-sm bg-gray-50">
+                    <option value="Efectivo">Efectivo</option>
+                    <option value="Nequi (3226438714)">Nequi (3226438714)</option>
+                </select>
+                <textarea id="c-obs" placeholder="Observaciones..." class="w-full p-2 border rounded-lg text-sm h-16"></textarea>
+            </div>
+        </div>
+
+        <h2 class="font-bold text-gray-700 mb-4 px-2 text-xs uppercase tracking-wider">Nuestro Menú (Todas a $8.000)</h2>
+        <div id="menu-container" class="space-y-4 mb-6"></div>
+
+        <div class="fixed bottom-0 left-0 w-full bg-white p-4 shadow-[0_-4px_10px_rgba(0,0,0,0.1)] z-50">
+            <div class="max-w-md mx-auto flex items-center justify-between gap-4">
+                <div class="bg-gray-100 px-4 py-2 rounded-lg flex-1">
+                    <span class="text-[10px] text-gray-500 uppercase block font-bold">Total a Pagar</span>
+                    <span id="grand-total" class="text-xl font-black text-green-600">$0</span>
+                </div>
+                <button onclick="generateInvoice()" class="bg-green-600 text-white px-6 py-3 rounded-xl font-bold flex items-center gap-2 active:scale-95 transition text-sm">
+                    <i class="fab fa-whatsapp"></i> ENVIAR PEDIDO
+                </button>
+            </div>
+        </div>
+
+        <footer class="mt-4 text-center text-gray-400 text-[10px] pb-10">
+            <p>App desarrollada por VIBRAS POSITIVAS</p>
+        </footer>
+    </section>
+
+    <script>
+        // Configuración del menú con el precio de $8.000
+        const menu = [
+            { id: 1, name: "Pizza Hawaiana", price: 8000, img: "pizza-hawaiana.jpg" },
+            { id: 2, name: "Jamón con Queso", price: 8000, img: "pizza-jamon-con-queso.jpg" },
+            { id: 3, name: "Pizza Ranchera", price: 8000, img: "pizza-ranchera.jpg" },
+            { id: 4, name: "Pollo con Champiñones", price: 8000, img: "pizza-pollo-con-champiñones.JPG" }
+        ];
+
+        let cart = {};
+
+        function loadMenu() {
+            const container = document.getElementById('menu-container');
+            container.innerHTML = menu.map(item => `
+                <div class="bg-white p-3 rounded-xl shadow-sm flex items-center gap-4 border border-gray-100">
+                    <img src="${item.img}" class="w-20 h-20 object-cover rounded-lg bg-gray-50" onerror="this.src='https://via.placeholder.com/80?text=Pizza'">
+                    <div class="flex-1">
+                        <h3 class="font-bold text-gray-800 text-sm">${item.name}</h3>
+                        <p class="text-green-600 font-bold text-sm">$8.000</p>
+                    </div>
+                    <div class="flex items-center gap-2 bg-gray-100 rounded-lg p-1">
+                        <button onclick="updateQty(${item.id}, -1)" class="w-8 h-8 bg-white rounded shadow text-red-500 font-bold">-</button>
+                        <span id="qty-${item.id}" class="w-6 text-center font-bold text-sm">0</span>
+                        <button onclick="updateQty(${item.id}, 1)" class="w-8 h-8 bg-white rounded shadow text-green-500 font-bold">+</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function updateQty(id, delta) {
+            if (!cart[id]) cart[id] = 0;
+            cart[id] = Math.max(0, cart[id] + delta);
+            document.getElementById(`qty-${id}`).innerText = cart[id];
+            calculateTotal();
+        }
+
+        function calculateTotal() {
+            let total = 0;
+            menu.forEach(item => {
+                total += (cart[item.id] || 0) * item.price;
+            });
+            document.getElementById('grand-total').innerText = `$${total.toLocaleString()}`;
+        }
+
+        function generateInvoice() {
+            const name = document.getElementById('c-name').value;
+            const address = document.getElementById('c-address').value;
+            const phone = document.getElementById('c-phone').value;
+            const payment = document.getElementById('c-payment').value;
+            const obs = document.getElementById('c-obs').value;
+
+            if (!name || !address) return alert("Por favor ingresa tu nombre y dirección");
+
+            let subtotal = 0;
+            let itemsText = "";
+
+            menu.forEach(prod => {
+                const qty = cart[prod.id] || 0;
+                if (qty > 0) {
+                    const lineTotal = qty * prod.price;
+                    subtotal += lineTotal;
+                    itemsText += `✅ ${qty} x ${prod.name} ($8.000) = $${lineTotal.toLocaleString()}%0A`;
+                }
+            });
+
+            if (subtotal === 0) return alert("Selecciona al menos una pizza");
+
+            const invoice = `*PIZZA TITY - PEDIDO NUEVO*%0A` +
+                `--------------------------------%0A` +
+                `*CLIENTE:* ${name}%0A` +
+                `*DIR:* ${address}%0A` +
+                `*TEL:* ${phone}%0A` +
+                `--------------------------------%0A` +
+                `*DETALLE:*%0A${itemsText}` +
+                `--------------------------------%0A` +
+                `*TOTAL A PAGAR: $${subtotal.toLocaleString()}*%0A` +
+                `*PAGO:* ${payment}%0A` +
+                `*OBS:* ${obs || 'Ninguna'}%0A%0A` +
+                `Plazoleta de las Pizzas, Caucasia%0A` +
+                `_App por VIBRAS POSITIVAS_`;
+
+            window.open(`https://wa.me/573226438714?text=${invoice}`, '_blank');
+        }
+
+        loadMenu();
+    </script>
+</body>
+</html>

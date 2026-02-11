@@ -46,49 +46,49 @@
         <div class="glass-card p-5 rounded-2xl shadow-xl mb-8 border border-white">
             <h2 class="font-black text-gray-800 mb-4 border-b-2 border-red-500 pb-1 text-sm uppercase">Información de Entrega</h2>
             <div id="customer-form" class="space-y-4">
-                <input type="text" id="c-name" placeholder="¿A nombre de quién?" class="w-full p-3 border-gray-200 border rounded-xl text-sm outline-none">
-                <input type="text" id="c-address" placeholder="Dirección exacta" class="w-full p-3 border-gray-200 border rounded-xl text-sm outline-none">
-                <input type="tel" id="c-phone" placeholder="Teléfono de contacto" class="w-full p-3 border-gray-200 border rounded-xl text-sm outline-none">
+                <input type="text" id="c-name" placeholder="¿A nombre de quién?" class="w-full p-3 border-gray-200 border rounded-xl text-sm outline-none shadow-sm focus:ring-2 focus:ring-red-500">
+                <input type="text" id="c-address" placeholder="Dirección exacta" class="w-full p-3 border-gray-200 border rounded-xl text-sm outline-none shadow-sm focus:ring-2 focus:ring-red-500">
+                <input type="tel" id="c-phone" placeholder="Celular" class="w-full p-3 border-gray-200 border rounded-xl text-sm outline-none shadow-sm focus:ring-2 focus:ring-red-500">
                 
                 <div class="bg-gray-50 p-3 rounded-xl border border-dashed border-gray-300">
                     <label class="text-[10px] uppercase font-bold text-gray-500 block mb-1">Método de Pago</label>
-                    <select id="c-payment" class="w-full bg-transparent font-bold text-gray-700 outline-none">
+                    <select id="c-payment" class="w-full bg-transparent font-bold text-gray-700 outline-none cursor-pointer">
                         <option value="Efectivo">💵 Efectivo</option>
-                        <option value="Transferencia Nequi">📱 Transferencia Nequi (Informativo)</option>
+                        <option value="Transferencia Nequi">📱 Transferencia Nequi</option>
                     </select>
                 </div>
 
-                <textarea id="c-obs" placeholder="¿Alguna nota especial?" class="w-full p-3 border-gray-200 border rounded-xl text-sm h-20 outline-none"></textarea>
+                <textarea id="c-obs" placeholder="Observaciones (ej. Sin cebolla, apartamento 201...)" class="w-full p-3 border-gray-200 border rounded-xl text-sm h-20 outline-none shadow-sm focus:ring-2 focus:ring-red-500"></textarea>
             </div>
         </div>
 
         <h2 class="font-black text-white drop-shadow-md mb-4 px-2 text-sm uppercase tracking-widest flex items-center gap-2">
-            <i class="fas fa-pizza-slice text-yellow-400"></i> Menú ($8.000)
+            <i class="fas fa-pizza-slice text-yellow-400"></i> Nuestro Menú ($8.000)
         </h2>
         
         <div id="menu-container" class="space-y-4 mb-10"></div>
 
-        <div class="fixed bottom-0 left-0 w-full bg-white/95 backdrop-blur-md p-4 shadow-lg z-50">
+        <div class="fixed bottom-0 left-0 w-full bg-white/95 backdrop-blur-md p-4 shadow-[0_-8px_20px_rgba(0,0,0,0.15)] z-50">
             <div class="max-w-md mx-auto flex items-center justify-between gap-4">
                 <div class="bg-gray-100 px-5 py-2 rounded-2xl flex-1 border border-gray-200">
-                    <span class="text-[10px] text-gray-500 uppercase block font-black">Total</span>
+                    <span class="text-[10px] text-gray-500 uppercase block font-black">Total a Pagar</span>
                     <span id="grand-total" class="text-2xl font-black text-red-600">$0</span>
                 </div>
-                <button onclick="generateInvoice()" class="bg-green-600 text-white px-8 py-4 rounded-2xl font-black flex items-center gap-2 active:scale-95 transition-all">
-                    <i class="fab fa-whatsapp text-xl"></i> PEDIR
+                <button onclick="generateInvoice()" class="bg-green-600 hover:bg-green-700 text-white px-8 py-4 rounded-2xl font-black flex items-center gap-2 active:scale-95 transition-all shadow-lg">
+                    <i class="fab fa-whatsapp text-xl"></i> ENVIAR
                 </button>
             </div>
         </div>
 
-        <footer class="mt-8 text-center text-gray-500 text-[10px] font-medium pb-12">
-            <p class="bg-white/50 inline-block px-4 py-1 rounded-full uppercase tracking-tighter">
-                App desarrollada por VIBRAS POSITIVAS &copy; Todos los derechos reservados
+        <footer class="mt-8 text-center text-gray-500 text-[10px] font-bold pb-12">
+            <p class="bg-white/50 inline-block px-4 py-1 rounded-full uppercase">
+                App desarrollada por VIBRAS POSITIVAS &copy; Derechos de Autor
             </p>
         </footer>
     </section>
 
     <script>
-        // CONFIGURACIÓN DE VENCIMIENTO (Formato: YYYY-MM-DD)
+        // CONFIGURACIÓN DE VENCIMIENTO
         const FECHA_VENCIMIENTO = '2026-03-10'; 
 
         function checkSubscription() {
@@ -96,7 +96,7 @@
             const vencimiento = new Date(FECHA_VENCIMIENTO);
             if (hoy > vencimiento) {
                 document.getElementById('expiration-overlay').style.display = 'flex';
-                document.getElementById('app-content').style.opacity = '0';
+                document.getElementById('app-content').style.display = 'none';
             }
         }
 
@@ -113,14 +113,14 @@
             const container = document.getElementById('menu-container');
             container.innerHTML = menu.map(item => `
                 <div class="glass-card p-3 rounded-2xl shadow-lg flex items-center gap-4 border border-white">
-                    <img src="${item.img}" class="w-24 h-24 object-cover rounded-xl shadow-inner" onerror="this.src='https://via.placeholder.com/150?text=Pizza+Tity'">
+                    <img src="${item.img}" class="w-24 h-24 object-cover rounded-xl" onerror="this.src='https://via.placeholder.com/150?text=Pizza+Tity'">
                     <div class="flex-1">
                         <h3 class="font-extrabold text-gray-800 text-base leading-tight">${item.name}</h3>
                         <p class="text-red-600 font-black text-lg">$8.000</p>
                     </div>
                     <div class="flex flex-col items-center gap-1 bg-gray-50 rounded-xl p-1 border border-gray-100">
                         <button onclick="updateQty(${item.id}, 1)" class="w-10 h-10 bg-white rounded-lg shadow-sm text-green-600 font-black text-xl">+</button>
-                        <span id="qty-${item.id}" class="text-lg font-black text-gray-800 py-1">0</span>
+                        <span id="qty-${item.id}" class="text-lg font-black text-gray-800">0</span>
                         <button onclick="updateQty(${item.id}, -1)" class="w-10 h-10 bg-white rounded-lg shadow-sm text-red-500 font-black text-xl">-</button>
                     </div>
                 </div>
@@ -145,34 +145,44 @@
         function generateInvoice() {
             const name = document.getElementById('c-name').value;
             const address = document.getElementById('c-address').value;
+            const phone = document.getElementById('c-phone').value;
             const payment = document.getElementById('c-payment').value;
+            const obs = document.getElementById('c-obs').value;
 
-            if (!name || !address) return alert("Por favor, completa tus datos.");
+            if (!name || !address) return alert("Por favor completa tu nombre y dirección.");
 
+            let subtotalTotal = 0;
             let itemsText = "";
-            let subtotal = 0;
+
             menu.forEach(prod => {
                 const qty = cart[prod.id] || 0;
                 if (qty > 0) {
-                    subtotal += qty * prod.price;
-                    itemsText += `🍕 ${qty} x ${prod.name}%0A`;
+                    const subtotalItem = qty * prod.price;
+                    subtotalTotal += subtotalItem;
+                    itemsText += `✅ ${qty} x ${prod.name}%0A   _Subtotal: $${subtotalItem.toLocaleString()}_%0A`;
                 }
             });
 
-            if (subtotal === 0) return alert("Selecciona al menos una pizza.");
+            if (subtotalTotal === 0) return alert("Selecciona al menos una pizza.");
 
-            const invoice = `*🍕 PIZZA TITY - NUEVO PEDIDO*%0A` +
-                `👤 *CLIENTE:* ${name}%0A📍 *DIR:* ${address}%0A` +
-                `============================%0A` +
-                `📝 *PEDIDO:*%0A${itemsText}` +
-                `💰 *TOTAL: $${subtotal.toLocaleString()}*%0A` +
-                `💳 *PAGO:* ${payment}%0A%0A` +
-                `_App por VIBRAS POSITIVAS &copy;_`;
+            const invoice = `*🍕 PIZZA TITY - FACTURA DE PEDIDO*%0A` +
+                `----------------------------------------%0A` +
+                `👤 *CLIENTE:* ${name}%0A` +
+                `📍 *DIRECCIÓN:* ${address}%0A` +
+                `📞 *CELULAR:* ${phone}%0A` +
+                `----------------------------------------%0A` +
+                `📦 *DETALLE DEL PEDIDO:*%0A${itemsText}` +
+                `----------------------------------------%0A` +
+                `💰 *TOTAL A PAGAR: $${subtotalTotal.toLocaleString()}*%0A` +
+                `💳 *MÉTODO DE PAGO:* ${payment}%0A` +
+                `📝 *OBSERVACIONES:* ${obs || 'Ninguna'}%0A%0A` +
+                `📍 Plazoleta de las Pizzas, Caucasia%0A` +
+                `----------------------------------------%0A` +
+                `_App desarrollada por *VIBRAS POSITIVAS* © Derechos de Autor_`;
 
             window.open(`https://wa.me/573226438714?text=${invoice}`, '_blank');
         }
 
-        // Ejecutar controles
         checkSubscription();
         loadMenu();
     </script>
